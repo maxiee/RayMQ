@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package raymq;
+
+// 消息队列服务接口
+service MessageQueue {
+  // 发送消息
+  rpc SendMessage(PublishRequest) returns (PublishResponse);
+  // 接收消息
+  rpc ReceiveMessage(ConsumeRequest) returns (ConsumeResponse);
+}
+
+// 定义消息发布请求
+message PublishRequest {
+  string queue_name = 1;
+  string message_body = 2;
+}
+
+// 定义消息发布响应
+message PublishResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// 定义消息消费请求
+message ConsumeRequest { string queue_name = 1; }
+
+// 定义消息消费响应
+message ConsumeResponse {
+  string message_id = 1;
+  string message_body = 2;
+}
