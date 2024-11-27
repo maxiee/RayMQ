@@ -35,13 +35,13 @@ class MessageQueueStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SendMessage = channel.unary_unary(
-                '/raymq.MessageQueue/SendMessage',
+        self.PublishMessage = channel.unary_unary(
+                '/generated.MessageQueue/PublishMessage',
                 request_serializer=message__queue__pb2.PublishRequest.SerializeToString,
                 response_deserializer=message__queue__pb2.PublishResponse.FromString,
                 _registered_method=True)
-        self.ReceiveMessage = channel.unary_unary(
-                '/raymq.MessageQueue/ReceiveMessage',
+        self.ConsumeMessage = channel.unary_unary(
+                '/generated.MessageQueue/ConsumeMessage',
                 request_serializer=message__queue__pb2.ConsumeRequest.SerializeToString,
                 response_deserializer=message__queue__pb2.ConsumeResponse.FromString,
                 _registered_method=True)
@@ -51,14 +51,14 @@ class MessageQueueServicer(object):
     """消息队列服务接口
     """
 
-    def SendMessage(self, request, context):
+    def PublishMessage(self, request, context):
         """发送消息
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ReceiveMessage(self, request, context):
+    def ConsumeMessage(self, request, context):
         """接收消息
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -68,21 +68,21 @@ class MessageQueueServicer(object):
 
 def add_MessageQueueServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SendMessage': grpc.unary_unary_rpc_method_handler(
-                    servicer.SendMessage,
+            'PublishMessage': grpc.unary_unary_rpc_method_handler(
+                    servicer.PublishMessage,
                     request_deserializer=message__queue__pb2.PublishRequest.FromString,
                     response_serializer=message__queue__pb2.PublishResponse.SerializeToString,
             ),
-            'ReceiveMessage': grpc.unary_unary_rpc_method_handler(
-                    servicer.ReceiveMessage,
+            'ConsumeMessage': grpc.unary_unary_rpc_method_handler(
+                    servicer.ConsumeMessage,
                     request_deserializer=message__queue__pb2.ConsumeRequest.FromString,
                     response_serializer=message__queue__pb2.ConsumeResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'raymq.MessageQueue', rpc_method_handlers)
+            'generated.MessageQueue', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('raymq.MessageQueue', rpc_method_handlers)
+    server.add_registered_method_handlers('generated.MessageQueue', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -91,7 +91,7 @@ class MessageQueue(object):
     """
 
     @staticmethod
-    def SendMessage(request,
+    def PublishMessage(request,
             target,
             options=(),
             channel_credentials=None,
@@ -104,7 +104,7 @@ class MessageQueue(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/raymq.MessageQueue/SendMessage',
+            '/generated.MessageQueue/PublishMessage',
             message__queue__pb2.PublishRequest.SerializeToString,
             message__queue__pb2.PublishResponse.FromString,
             options,
@@ -118,7 +118,7 @@ class MessageQueue(object):
             _registered_method=True)
 
     @staticmethod
-    def ReceiveMessage(request,
+    def ConsumeMessage(request,
             target,
             options=(),
             channel_credentials=None,
@@ -131,7 +131,7 @@ class MessageQueue(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/raymq.MessageQueue/ReceiveMessage',
+            '/generated.MessageQueue/ConsumeMessage',
             message__queue__pb2.ConsumeRequest.SerializeToString,
             message__queue__pb2.ConsumeResponse.FromString,
             options,

@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package raymq;
+package generated;
 
 // 消息队列服务接口
 service MessageQueue {
   // 发送消息
-  rpc SendMessage(PublishRequest) returns (PublishResponse);
+  rpc PublishMessage(PublishRequest) returns (PublishResponse);
   // 接收消息
-  rpc ReceiveMessage(ConsumeRequest) returns (ConsumeResponse);
+  rpc ConsumeMessage(ConsumeRequest) returns (ConsumeResponse);
 }
 
 // 定义消息发布请求
