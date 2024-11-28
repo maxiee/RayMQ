@@ -1,5 +1,11 @@
 import grpc
 import message_queue_pb2, message_queue_pb2_grpc
+from RayCommonPy.service_registry import (
+    SERVICE_HOST,
+    SERVICE_NAME_RAYMQ,
+    SERVICE_PORT,
+    find_service,
+)
 
 
 def publish_message(queue_name, message_body):
@@ -14,7 +20,10 @@ def publish_message(queue_name, message_body):
 
 
 def consume_message(queue_name):
-    with grpc.insecure_channel("localhost:50051") as channel:
+    mq_service = find_service(SERVICE_NAME_RAYMQ)
+    with grpc.insecure_channel(
+        f"{mq_service[SERVICE_HOST]}:{mq_service[SERVICE_PORT]}"
+    ) as channel:
         stub = message_queue_pb2_grpc.MessageQueueStub(channel)
         response = stub.ConsumeMessage(
             message_queue_pb2.ConsumeRequest(queue_name=queue_name)

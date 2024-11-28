@@ -1,6 +1,11 @@
 from concurrent import futures
 import grpc
 import message_queue_pb2, message_queue_pb2_grpc
+from RayCommonPy.service_registry import (
+    SERVICE_NAME_RAYMQ,
+    SERVICE_PORT,
+    find_service,
+)
 
 # 内存中的简单消息队列
 queues = {}
@@ -36,9 +41,10 @@ def serve():
     message_queue_pb2_grpc.add_MessageQueueServicer_to_server(
         MessageQueueService(), server
     )
-    server.add_insecure_port("[::]:50051")
+    port = find_service(SERVICE_NAME_RAYMQ)[SERVICE_PORT]
+    server.add_insecure_port(f"[::]:{port}")
     server.start()
-    print("Server started on port 50051")
+    print(f"Server started on port {port}")
     server.wait_for_termination()
 
 
